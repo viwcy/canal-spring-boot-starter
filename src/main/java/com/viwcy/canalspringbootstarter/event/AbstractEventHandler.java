@@ -5,21 +5,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * 事件处理模板
  */
-public abstract class AbstractEventHandler implements Serializable {
+public abstract class AbstractEventHandler implements IEventHandle {
 
     static final Logger log = LoggerFactory.getLogger(AbstractEventHandler.class);
 
     //流程框架
-    public void run(List<CanalEntry.RowData> rowDataList) throws Exception {
+    @Override
+    public void handle(List<CanalEntry.RowData> rowDataList) throws Exception {
         log.info("event handle start");
         check(rowDataList);
-        handle(rowDataList);
+        doHandle(rowDataList);
         log.info("event handle end");
     }
 
@@ -31,6 +31,6 @@ public abstract class AbstractEventHandler implements Serializable {
     }
 
     //钩子，业务自行实现
-    public abstract void handle(List<CanalEntry.RowData> rowDataList) throws Exception;
+    public abstract void doHandle(List<CanalEntry.RowData> rowDataList) throws Exception;
 
 }

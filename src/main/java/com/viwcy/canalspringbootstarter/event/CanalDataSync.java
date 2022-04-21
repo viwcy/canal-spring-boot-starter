@@ -80,7 +80,7 @@ public class CanalDataSync {
             }
             AbstractEventHandler handler = factory.getHandler(EventHandlerFactory.createUnionKey(schemaName, tableName, eventType));
             log.info("获取事件处理器 = " + handler.getClass());
-            handler.run(rowDataList);
+            handler.handle(rowDataList);
         }
     }
 
