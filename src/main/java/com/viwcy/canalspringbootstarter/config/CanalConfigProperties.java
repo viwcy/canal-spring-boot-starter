@@ -10,19 +10,29 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "canal")
 public class CanalConfigProperties {
 
-    //canal主机
+    /**
+     * canal主机
+     */
     private String host;
 
-    //端口
+    /**
+     * 端口
+     */
     private Integer port;
 
-    //节点
+    /**
+     * 节点
+     */
     private String destination;
 
-    //批处理数量
+    /**
+     * 批处理数量
+     */
     private Integer batchSize;
 
-    //规则
+    /**
+     * 规则
+     */
     private String filter;
 
 }
