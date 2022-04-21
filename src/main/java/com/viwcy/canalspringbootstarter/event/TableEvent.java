@@ -5,7 +5,7 @@ import com.alibaba.otter.canal.protocol.CanalEntry;
 import java.lang.annotation.*;
 
 /**
- * 表事件 注解
+ * 表事件
  */
 @Documented
 @Target({ElementType.TYPE})
