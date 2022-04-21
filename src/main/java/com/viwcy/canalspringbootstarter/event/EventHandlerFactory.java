@@ -15,13 +15,13 @@ public class EventHandlerFactory {
 
     private static final Logger log = LoggerFactory.getLogger(EventHandlerFactory.class);
 
-    private Map<String, AbstractEventHandler> _handle = new HashMap<>();
+    private Map<String, IEventHandle> _handle = new HashMap<>();
 
-    public AbstractEventHandler getHandler(String key) {
+    public IEventHandle getHandler(String key) {
         return _handle.get(key);
     }
 
-    public void setHandler(String key, AbstractEventHandler handler) {
+    public void setHandler(String key, IEventHandle handler) {
         _handle.put(key, handler);
     }
 

@@ -45,7 +45,6 @@ public class CanalDataSync {
                     handle(entries);
                     canalConnector.ack(batchId);
                 } catch (Exception e) {
-//                    log.error("处理数据异常，batchId = {}, cause = ", batchId, e);
                     canalConnector.rollback();
                 }
             }
@@ -78,7 +77,7 @@ public class CanalDataSync {
             if (CollectionUtils.isEmpty(rowDataList)) {
                 continue;
             }
-            AbstractEventHandler handler = factory.getHandler(EventHandlerFactory.createUnionKey(schemaName, tableName, eventType));
+            IEventHandle handler = factory.getHandler(EventHandlerFactory.createUnionKey(schemaName, tableName, eventType));
             log.info("获取事件处理器 = " + handler.getClass());
             handler.handle(rowDataList);
         }
