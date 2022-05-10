@@ -3,11 +3,14 @@ package com.viwcy.canalspringbootstarter.event;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.otter.canal.protocol.CanalEntry;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 /**
  * rowData解析成json
  */
+@Component
 public class DataParser {
 
     /**

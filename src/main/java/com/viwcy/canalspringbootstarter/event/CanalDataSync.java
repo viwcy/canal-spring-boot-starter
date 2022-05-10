@@ -32,16 +32,15 @@ public class CanalDataSync {
         while (true) {
             Message message = canalConnector.getWithoutAck(canalConfigProperties.getBatchSize());
             long batchId = message.getId();
-            int size = message.getEntries().size();
-            if (batchId == -1 || size == 0) {
+            List<CanalEntry.Entry> entries = message.getEntries();
+            if (batchId == -1 || CollectionUtils.isEmpty(entries)) {
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(canalConfigProperties.getSleepTime());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             } else {
                 try {
-                    List<CanalEntry.Entry> entries = message.getEntries();
                     handle(entries);
                     canalConnector.ack(batchId);
                 } catch (Exception e) {
@@ -78,9 +77,8 @@ public class CanalDataSync {
                 continue;
             }
             IEventHandle handler = factory.getHandler(EventHandlerFactory.createUnionKey(schemaName, tableName, eventType));
-            log.info("获取事件处理器 = " + handler.getClass());
+            log.info("query event handle = " + handler.getClass().getSimpleName());
             handler.handle(rowDataList);
         }
     }
-
 }

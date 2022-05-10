@@ -11,28 +11,33 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class CanalConfigProperties {
 
     /**
-     * canal主机
+     * canal服务主机
      */
-    private String host;
+    private String host = "127.0.0.1";
 
     /**
-     * 端口
+     * canal内部端口
      */
-    private Integer port;
+    private Integer port = 11111;
 
     /**
      * 节点
      */
-    private String destination;
+    private String destination = "example";
 
     /**
      * 批处理数量
      */
-    private Integer batchSize;
+    private Integer batchSize = 1000;
 
     /**
      * 规则
      */
-    private String filter;
+    private String filter = ".*\\\\..*";
+
+    /**
+     * 未拉取到数据变更，休眠的时间，默认2000，单位ms
+     */
+    private Long sleepTime = 2000L;
 
 }

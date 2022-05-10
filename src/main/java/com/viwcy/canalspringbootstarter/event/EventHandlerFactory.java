@@ -44,7 +44,7 @@ public class EventHandlerFactory {
             }
             CanalEntry.EventType eventType = annotation.eventType();
             String unionKey = createUnionKey(annotation.database(), annotation.table(), eventType);
-            log.info("Auto loading handler，unionKey = " + unionKey + "，handle = " + eventHandler);
+            log.info("Auto loading handler，unionKey = " + unionKey + "，handle = " + eventHandler.getClass().getSimpleName());
             setHandler(unionKey, eventHandler);
         }
     }
