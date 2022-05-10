@@ -1,7 +1,7 @@
 package com.viwcy.canalspringbootstarter.event;
 
 import com.alibaba.otter.canal.protocol.CanalEntry;
-import com.viwcy.canalspringbootstarter.util.SpringContextUtils;
+import com.viwcy.canalspringbootstarter.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +32,7 @@ public class EventHandlerFactory {
     public void register() {
 
         //手动获取所有子类执行器
-        Map<String, AbstractEventHandler> eventHandlerMap = SpringContextUtils.getBeansByType(AbstractEventHandler.class);
+        Map<String, AbstractEventHandler> eventHandlerMap = SpringContextUtil.getBeansByType(AbstractEventHandler.class);
 
         //注册handle
         for (Map.Entry<String, AbstractEventHandler> eventHandlerEntry : eventHandlerMap.entrySet()) {
