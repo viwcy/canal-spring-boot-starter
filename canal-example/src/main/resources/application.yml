@@ -4,10 +4,15 @@ server:
     uri-encoding: UTF-8
 #canal配置
 canal:
-  host: 127.0.0.1
-  port: 11111
   destination: example
   batchSize: 1000
   #配置规则，多个用逗号隔开
   filter: canal_example.user
-#  filter: canal_example.*
+  model: cluster
+  cluster:
+    zk-servers: 127.0.0.1:2181
+    retry-times: 5
+    retry-interval: 10000
+  single:
+    host: 127.0.0.1
+    port: 11111
