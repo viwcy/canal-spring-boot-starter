@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * 事件处理模板
  */
-public abstract class AbstractEventHandler<T> implements IEventHandle<T> {
+public abstract class AbstractEventHandler<T> implements IEventHandle {
 
     static final Logger log = LoggerFactory.getLogger(AbstractEventHandler.class);
 
@@ -25,7 +25,7 @@ public abstract class AbstractEventHandler<T> implements IEventHandle<T> {
 
     //流程框架
     @Override
-    public void handle(List<CanalEntry.RowData> rowDataList) throws Exception {
+    public void handle(List<CanalEntry.RowData> rowDataList) {
 
         log.info("event handle start");
         try {
