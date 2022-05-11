@@ -25,7 +25,7 @@ public abstract class AbstractEventHandler<T> implements IEventHandle {
 
     //流程框架
     @Override
-    public void handle(List<CanalEntry.RowData> rowDataList) {
+    public void handle(List<CanalEntry.RowData> rowDataList) throws Exception {
 
         log.info("event handle start");
         try {
@@ -37,8 +37,10 @@ public abstract class AbstractEventHandler<T> implements IEventHandle {
             this.doHandle(list);
         } catch (Exception e) {
             log.error("canal handle has error, cause = " + e);
+            throw new Exception("canal handle has error , e = " + e);
+        } finally {
+            log.info("event handle end");
         }
-        log.info("event handle end");
     }
 
     private void check(List<CanalEntry.RowData> rowDataList) throws Exception {

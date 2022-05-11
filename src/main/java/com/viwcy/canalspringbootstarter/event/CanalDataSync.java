@@ -44,7 +44,7 @@ public class CanalDataSync {
                     handle(entries);
                     canalConnector.ack(batchId);
                 } catch (Exception e) {
-                    canalConnector.rollback();
+                    canalConnector.rollback(batchId);
                 }
             }
         }
