@@ -39,21 +39,19 @@ public class CanalDataSync {
         Message message = canalConnector.getWithoutAck(canalConfigProperties.getBatchSize());
         long batchId = message.getId();
         List<CanalEntry.Entry> entries = message.getEntries();
+        log.debug("batchId = " + batchId);
         if (batchId == -1 || CollectionUtils.isEmpty(entries)) {
-            try {
-                Thread.sleep(canalConfigProperties.getSleepTime());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                //过滤不需要处理的数据类型
-                List<CanalEntry.Entry> collect = entries.stream().filter(entry -> (entry.getEntryType() != CanalEntry.EntryType.TRANSACTIONBEGIN && entry.getEntryType() != CanalEntry.EntryType.TRANSACTIONEND)).collect(Collectors.toList());
-                handle(collect);
-                canalConnector.ack(batchId);
-            } catch (Exception e) {
-                canalConnector.rollback(batchId);
-            }
+            return;
+        }
+        try {
+            //过滤不需要处理的数据类型
+            List<CanalEntry.Entry> collect = entries.stream().filter(entry -> (entry.getEntryType() != CanalEntry.EntryType.TRANSACTIONBEGIN && entry.getEntryType() != CanalEntry.EntryType.TRANSACTIONEND)).collect(Collectors.toList());
+            handle(collect);
+            canalConnector.ack(batchId);
+            log.info("batchId = {}, 处理完毕", batchId);
+        } catch (Exception e) {
+            log.error("异常，e = " + e);
+            canalConnector.rollback(batchId);
         }
     }
 
@@ -79,6 +77,9 @@ public class CanalDataSync {
                 continue;
             }
             IEventHandle handler = factory.getHandler(EventHandlerFactory.createUnionKey(schemaName, tableName, eventType));
+            if (Objects.isNull(handler)) {
+                continue;
+            }
             log.info("query event handle = " + handler.getClass().getSimpleName());
             handler.handle(rowDataList);
         }

@@ -5,7 +5,7 @@ server:
 #canal配置
 canal:
   destination: example
-  batchSize: 1000
+  batchSize: 1
   #配置规则，多个用逗号隔开
   filter: canal_example.user
   model: single
@@ -16,3 +16,7 @@ canal:
   single:
     host: 127.0.0.1
     port: 11111
+
+logging:
+  level:
+    com.viwcy.canalspringbootstarter: debug

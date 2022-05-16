@@ -36,7 +36,6 @@ public abstract class AbstractEventHandler<T> implements IEventHandle {
             }
             this.doHandle(list);
         } catch (Exception e) {
-            log.error("canal handle has error, cause = " + e);
             throw new Exception("canal handle has error , e = " + e);
         } finally {
             log.info("event handle end");
