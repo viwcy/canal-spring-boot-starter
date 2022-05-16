@@ -3,13 +3,14 @@ package com.viwcy.canalspringbootstarter.event;
 import com.alibaba.otter.canal.client.CanalConnector;
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.alibaba.otter.canal.protocol.Message;
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.viwcy.canalspringbootstarter.config.CanalConfigProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * TODO  Copyright (c) yun lu 2021 Fau (viwcy4611@gmail.com), ltd
@@ -27,43 +28,44 @@ public class CanalDataSync {
         this.factory = factory;
     }
 
+    /**
+     * 最好不要无限循环，太消耗资源，建议任务调度，2-5s拉取一次
+     */
+    @Scheduled(initialDelayString = "#{@initialDelay}", fixedDelayString = "#{@fixedDelay}")
     public void execute() {
 
-        while (true) {
-            Message message = canalConnector.getWithoutAck(canalConfigProperties.getBatchSize());
-            long batchId = message.getId();
-            List<CanalEntry.Entry> entries = message.getEntries();
-            if (batchId == -1 || CollectionUtils.isEmpty(entries)) {
-                try {
-                    Thread.sleep(canalConfigProperties.getSleepTime());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try {
-                    handle(entries);
-                    canalConnector.ack(batchId);
-                } catch (Exception e) {
-                    canalConnector.rollback(batchId);
-                }
+        log.debug("canal scheduled task pull data");
+
+        Message message = canalConnector.getWithoutAck(canalConfigProperties.getBatchSize());
+        long batchId = message.getId();
+        List<CanalEntry.Entry> entries = message.getEntries();
+        if (batchId == -1 || CollectionUtils.isEmpty(entries)) {
+            try {
+                Thread.sleep(canalConfigProperties.getSleepTime());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                //过滤不需要处理的数据类型
+                List<CanalEntry.Entry> collect = entries.stream().filter(entry -> (entry.getEntryType() != CanalEntry.EntryType.TRANSACTIONBEGIN && entry.getEntryType() != CanalEntry.EntryType.TRANSACTIONEND)).collect(Collectors.toList());
+                handle(collect);
+                canalConnector.ack(batchId);
+            } catch (Exception e) {
+                canalConnector.rollback(batchId);
             }
         }
     }
 
+    /**
+     * 这里的entries，已经经过了过滤，比如MySQL批处理更新了两条数据，则entries就是两条
+     */
     private void handle(List<CanalEntry.Entry> entries) throws Exception {
         if (CollectionUtils.isEmpty(entries)) {
             return;
         }
         for (CanalEntry.Entry entry : entries) {
-            if (entry.getEntryType() == CanalEntry.EntryType.TRANSACTIONBEGIN || entry.getEntryType() == CanalEntry.EntryType.TRANSACTIONEND) {
-                continue;
-            }
-            CanalEntry.RowChange rowChange = null;
-            try {
-                rowChange = CanalEntry.RowChange.parseFrom(entry.getStoreValue());
-            } catch (InvalidProtocolBufferException e) {
-                log.error("解析获取CanalEntry.RowChange异常，原因 = " + e);
-            }
+            CanalEntry.RowChange rowChange = CanalEntry.RowChange.parseFrom(entry.getStoreValue());
 
             if (Objects.isNull(rowChange)) {
                 continue;
@@ -81,4 +83,5 @@ public class CanalDataSync {
             handler.handle(rowDataList);
         }
     }
+
 }

@@ -8,7 +8,7 @@ canal:
   batchSize: 1000
   #配置规则，多个用逗号隔开
   filter: canal_example.user
-  model: cluster
+  model: single
   cluster:
     zk-servers: 127.0.0.1:2181
     retry-times: 5

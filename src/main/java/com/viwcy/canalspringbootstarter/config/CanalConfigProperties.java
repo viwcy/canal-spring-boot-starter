@@ -3,6 +3,7 @@ package com.viwcy.canalspringbootstarter.config;
 import com.viwcy.canalspringbootstarter.constant.CanalModel;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 
 /**
  * canal配置信息
@@ -38,6 +39,26 @@ public class CanalConfigProperties {
      * canal监听模式（单机或集群）
      */
     private CanalModel model = CanalModel.SINGLE;
+
+    /**
+     * canal拉取数据，项目启动多久之后首次拉取，单位ms
+     */
+    public String initialDelay = "2000";
+
+    /**
+     * canal拉取数据，上次任务结束多久之后再去拉取，单位ms
+     */
+    private String fixedDelay = "2000";
+
+    @Bean
+    public String initialDelay () {
+        return this.initialDelay;
+    }
+
+    @Bean
+    public String fixedDelay () {
+        return this.fixedDelay;
+    }
 
     @Data
     public static class Single {

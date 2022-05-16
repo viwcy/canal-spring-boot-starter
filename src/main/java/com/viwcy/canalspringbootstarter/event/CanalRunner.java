@@ -11,7 +11,6 @@ import org.springframework.boot.ApplicationRunner;
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class CanalRunner implements ApplicationRunner {
 
-    private final CanalDataSync canalDataSync;
     private final EventHandlerFactory eventHandlerFactory;
 
     @Override
@@ -19,7 +18,5 @@ public class CanalRunner implements ApplicationRunner {
 
         //注册事件执行器
         eventHandlerFactory.register();
-        //监听
-        canalDataSync.execute();
     }
 }

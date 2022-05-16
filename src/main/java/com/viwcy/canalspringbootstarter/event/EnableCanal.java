@@ -2,6 +2,7 @@ package com.viwcy.canalspringbootstarter.event;
 
 import com.viwcy.canalspringbootstarter.config.CanalAutoConfiguration;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.SchedulingConfiguration;
 
 import java.lang.annotation.*;
 
@@ -11,6 +12,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import({CanalAutoConfiguration.class, CanalRunner.class})
+@Import({CanalAutoConfiguration.class, CanalRunner.class, SchedulingConfiguration.class})
 public @interface EnableCanal {
 }
