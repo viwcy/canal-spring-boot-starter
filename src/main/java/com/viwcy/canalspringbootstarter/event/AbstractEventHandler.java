@@ -1,6 +1,7 @@
 package com.viwcy.canalspringbootstarter.event;
 
 import com.alibaba.otter.canal.protocol.CanalEntry;
+import com.viwcy.canalspringbootstarter.constant.ColumnEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public abstract class AbstractEventHandler<T> implements IEventHandle {
 
     protected abstract void doHandle(List<T> list) throws Exception;
 
-    protected abstract Boolean handleAfter();
+    protected abstract ColumnEnum column();
 
     private final Class<T> handleClass() {
         Class clazz = this.getClass();
@@ -67,7 +68,7 @@ public abstract class AbstractEventHandler<T> implements IEventHandle {
 
         while (iterator.hasNext()) {
             CanalEntry.RowData rowData = iterator.next();
-            T parse = this.dataParser.parse(clazz, rowData, this.handleAfter());
+            T parse = this.dataParser.parse(clazz, rowData, this.column());
             list.add(parse);
         }
         return list;
