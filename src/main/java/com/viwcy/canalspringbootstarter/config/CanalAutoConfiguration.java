@@ -6,7 +6,7 @@ import com.alibaba.otter.canal.client.impl.ClusterCanalConnector;
 import com.alibaba.otter.canal.client.impl.ClusterNodeAccessStrategy;
 import com.alibaba.otter.canal.common.zookeeper.ZkClientx;
 import com.viwcy.canalspringbootstarter.constant.CanalModel;
-import com.viwcy.canalspringbootstarter.event.CanalDataSync;
+import com.viwcy.canalspringbootstarter.event.CanalDataListener;
 import com.viwcy.canalspringbootstarter.event.EventHandlerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,9 +36,9 @@ public class CanalAutoConfiguration {
     }
 
     @Bean
-    public CanalDataSync canalDataSync(CanalConnector connector, CanalConfigProperties properties,
-                                       EventHandlerFactory factory) {
-        return new CanalDataSync(connector, properties, factory);
+    public CanalDataListener canalDataSync(CanalConnector connector, CanalConfigProperties properties,
+                                           EventHandlerFactory factory) {
+        return new CanalDataListener(connector, properties, factory);
     }
 
     @Bean

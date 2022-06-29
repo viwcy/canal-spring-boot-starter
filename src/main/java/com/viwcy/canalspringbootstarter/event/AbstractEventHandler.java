@@ -1,11 +1,13 @@
 package com.viwcy.canalspringbootstarter.event;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.viwcy.canalspringbootstarter.constant.ColumnEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.ParameterizedType;
@@ -29,15 +31,22 @@ public abstract class AbstractEventHandler<T> implements IEventHandle {
     public void handle(List<CanalEntry.RowData> rowDataList) throws Exception {
 
         log.info("event handle start");
+        check(rowDataList);
+        List<T> list = analysis(rowDataList);
+        if (CollectionUtils.isEmpty(list)) {
+            return;
+        }
         try {
-            check(rowDataList);
-            List<T> list = analysis(rowDataList);
-            if (CollectionUtils.isEmpty(list)) {
-                return;
-            }
             this.doHandle(list);
         } catch (Exception e) {
-            throw new Exception("canal handle has error , e = " + e);
+            log.error("canal handle has error , e = " + e);
+            //TODO  业务消费失败之后，补偿入库，定时任务消费
+            if (!CollectionUtils.isEmpty(list)) {
+                //资源类型，数据，操作类型
+                resourceType();
+                eventType();
+                log.info("compensation has been completed , list = " + JSON.toJSONString(list));
+            }
         } finally {
             log.info("event handle end");
         }
@@ -50,9 +59,14 @@ public abstract class AbstractEventHandler<T> implements IEventHandle {
         }
     }
 
-    protected abstract void doHandle(List<T> list) throws Exception;
+    @Transactional(rollbackFor = Exception.class)
+    protected abstract void doHandle(List<T> list);
 
     protected abstract ColumnEnum column();
+
+    protected abstract String resourceType();
+
+    protected abstract CanalEntry.EventType eventType();
 
     private final Class<T> handleClass() {
         Class clazz = this.getClass();

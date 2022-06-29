@@ -18,12 +18,22 @@ import java.util.List;
 public class AddUserHandle extends AbstractEventHandler<User> {
 
     @Override
-    protected void doHandle(List<User> list) throws Exception {
+    protected void doHandle(List<User> list) {
         System.out.println(JSON.toJSONString(list));
     }
 
     @Override
     protected ColumnEnum column() {
         return ColumnEnum.AFTER_COLUMN;
+    }
+
+    @Override
+    protected String resourceType() {
+        return null;
+    }
+
+    @Override
+    protected CanalEntry.EventType eventType() {
+        return null;
     }
 }

@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
  * TODO  Copyright (c) yun lu 2021 Fau (viwcy4611@gmail.com), ltd
  */
 @Slf4j
-public class CanalDataSync {
+public class CanalDataListener {
 
     private final CanalConnector canalConnector;
     private final CanalConfigProperties canalConfigProperties;
     private final EventHandlerFactory factory;
 
-    public CanalDataSync(CanalConnector canalConnector, CanalConfigProperties canalConfigProperties, EventHandlerFactory factory) {
+    public CanalDataListener(CanalConnector canalConnector, CanalConfigProperties canalConfigProperties, EventHandlerFactory factory) {
         this.canalConnector = canalConnector;
         this.canalConfigProperties = canalConfigProperties;
         this.factory = factory;
